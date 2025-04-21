@@ -1,18 +1,76 @@
-import React from "react";
-import "./App.css";
+import React, { useState, useEffect } from 'react';
+import './App.css';
 
-const App: React.FC = () => {
+function App() {
+  const [tab, setTab] = useState<'manual' | 'agent'>('manual');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    date: '',
+    time: '',
+  });
+  const [darkMode, setDarkMode] = useState(false);
+
+  useEffect(() => {
+    document.body.className = darkMode ? 'dark' : '';
+  }, [darkMode]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:5000/api/meetings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      alert('Meeting Scheduled!');
+      console.log(data);
+    } catch (err) {
+      alert('Error scheduling meeting');
+      console.error(err);
+    }
+  };
+
   return (
-    <div className="app-container">
-      <div className="card">
-        <h1>AI Voice Meeting Scheduler 🤖📅</h1>
-        <p>Our smart agent will call and schedule your meetings like a human!</p>
-        <button onClick={() => alert("Feature Coming Soon!")}>
-          Call to Book a Meeting
-        </button>
+    <div className="container">
+      <h1>AI Meeting Scheduler</h1>
+      <div className="tabs">
+        <button className={tab === 'manual' ? 'active' : ''} onClick={() => setTab('manual')}>Manual Booking</button>
+        <button className={tab === 'agent' ? 'active' : ''} onClick={() => setTab('agent')}>AI Agent Booking</button>
       </div>
+
+      <div className="theme-toggle">
+        <label className="theme-switch">
+          <input 
+            type="checkbox" 
+            checked={darkMode} 
+            onChange={() => setDarkMode(!darkMode)} 
+          />
+          <span className="slider"></span>
+        </label>
+      </div>
+
+      {tab === 'manual' ? (
+        <form className="form" onSubmit={handleSubmit}>
+          <input type="text" name="name" placeholder="Your Name" onChange={handleChange} required />
+          <input type="email" name="email" placeholder="Email Address" onChange={handleChange} required />
+          <input type="date" name="date" onChange={handleChange} required />
+          <input type="time" name="time" onChange={handleChange} required />
+          <button type="submit">Book Meeting</button>
+        </form>
+      ) : (
+        <div className="agent">
+          <p>📞 Call our AI Agent at <strong>+1 (555) 123-4567</strong> to book a meeting!</p>
+          <p>(We'll integrate Twilio next to make this interactive.)</p>
+        </div>
+      )}
     </div>
   );
-};
+}
 
 export default App;

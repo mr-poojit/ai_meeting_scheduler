@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import meetingRoutes from "./routes/meetings.js";
+import voiceRoutes from "./routes/twilio.js";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api/meetings", meetingRoutes);
+app.use("/api/voice", voiceRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)

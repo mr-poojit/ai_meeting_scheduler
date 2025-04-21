@@ -65,8 +65,7 @@ function App() {
         </form>
       ) : (
         <div className="agent">
-          <p>📞 Call our AI Agent at <strong>+1 (555) 123-4567</strong> to book a meeting!</p>
-          <p>(We'll integrate Twilio next to make this interactive.)</p>
+          <p>📞 Call our AI Agent at <strong>+1 9514944738</strong> to book a meeting!</p>
         </div>
       )}
     </div>

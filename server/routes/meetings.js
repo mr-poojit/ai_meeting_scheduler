@@ -1,5 +1,5 @@
 import express from "express";
-import { saveMeeting, getMeetings } from "../controllers/meetingController.js";
+import { saveMeeting, getMeetings } from "../controllers/meetingControllers.js";
 
 const router = express.Router();
 

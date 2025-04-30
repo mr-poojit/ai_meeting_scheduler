@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import meetingRoutes from "./routes/meetings.js";
-import voiceRoutes from "./routes/twilio.js";
+import voiceRoutes from "./routes/voice.js";
 
 dotenv.config();
 

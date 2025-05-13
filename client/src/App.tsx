@@ -29,7 +29,7 @@ function App() {
       });
       const data = await res.json();
       alert('Meeting Scheduled!');
-      console.log(data);
+      setFormData({ name: '', email: '', date: '', time: '' });
     } catch (err) {
       alert('Error scheduling meeting');
       console.error(err);
@@ -39,6 +39,7 @@ function App() {
   return (
     <div className="container">
       <h1>AI Meeting Scheduler</h1>
+
       <div className="tabs">
         <button className={tab === 'manual' ? 'active' : ''} onClick={() => setTab('manual')}>Manual Booking</button>
         <button className={tab === 'agent' ? 'active' : ''} onClick={() => setTab('agent')}>AI Agent Booking</button>
@@ -57,15 +58,16 @@ function App() {
 
       {tab === 'manual' ? (
         <form className="form" onSubmit={handleSubmit}>
-          <input type="text" name="name" placeholder="Your Name" onChange={handleChange} required />
-          <input type="email" name="email" placeholder="Email Address" onChange={handleChange} required />
-          <input type="date" name="date" onChange={handleChange} required />
-          <input type="time" name="time" onChange={handleChange} required />
+          <input type="text" name="name" placeholder="Your Name" value={formData.name} onChange={handleChange} required />
+          <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required />
+          <input type="date" name="date" value={formData.date} onChange={handleChange} required />
+          <input type="time" name="time" value={formData.time} onChange={handleChange} required />
           <button type="submit">Book Meeting</button>
         </form>
       ) : (
         <div className="agent">
           <p>📞 Call our AI Agent at <strong>+1 9514944738</strong> to book a meeting!</p>
+          <p>COMING SOON!!</p>
         </div>
       )}
     </div>

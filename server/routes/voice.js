@@ -1,12 +1,15 @@
 import express from "express";
 import {
-  voiceWebhook,
-  handleVoiceInput,
+  exotelVoicePrompt,
+  handleRecordingCallback,
 } from "../controllers/voiceController.js";
 
 const router = express.Router();
 
-router.post("/twilio/voice", voiceWebhook);
-router.post("/handle-input", handleVoiceInput);
+// Exotel calls this to ask user input
+router.post("/voice", exotelVoicePrompt);
+
+// Exotel posts the recorded audio URL here
+router.post("/voice/recording", handleRecordingCallback);
 
 export default router;

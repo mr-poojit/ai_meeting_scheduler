@@ -1,12 +1,15 @@
 import mongoose from "mongoose";
 
-const MeetingSchema = new mongoose.Schema({
-  title: String,
-  date: String,
-  time: String,
-  participants: String,
-  agenda: String,
-  confirmedAt: String,
-});
+const meetingSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    date: { type: String, required: true },
+    time: { type: String, required: true },
+  },
+  { timestamps: true }
+);
 
-export default mongoose.model("Meeting", MeetingSchema);
+const Meeting = mongoose.model("Meeting", meetingSchema);
+
+export default Meeting;

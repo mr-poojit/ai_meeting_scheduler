@@ -1,58 +1,39 @@
-import twilio from "twilio";
 import Meeting from "../models/Meeting.js";
+import axios from "axios";
 
-const VoiceResponse = twilio.twiml.VoiceResponse;
-
-export const voiceWebhook = (req, res) => {
-  const twiml = new VoiceResponse();
-
-  const gather = twiml.gather({
-    input: "speech",
-    timeout: 5,
-    hints: "name, email, date, time, meeting",
-    action: "/api/voice/handle-input",
-    method: "POST",
-  });
-
-  gather.say(
-    "Hi! I am your AI scheduling assistant. Please tell me your name and the date you want to schedule a meeting."
-  );
+export const exotelVoicePrompt = (req, res) => {
+  const exoml = `<?xml version="1.0" encoding="UTF-8"?>
+  <Response>
+    <Say>Hello! Thank you for calling AI Meeting Scheduler! Please tell me your name, date, and time for the meeting after the beep.</Say>
+    <Record timeout="10" maxDuration="30" action="/api/voice/recording" />
+  </Response>`;
 
   res.type("text/xml");
-  res.send(twiml.toString());
+  res.send(exoml);
 };
 
-export const handleVoiceInput = async (req, res) => {
-  const speechText = req.body.SpeechResult;
-  console.log("🔈 Received speech:", speechText);
+export const handleRecordingCallback = async (req, res) => {
+  const recordingUrl = req.body.RecordingUrl;
 
-  // Dummy extraction (replace with NLP/LLM later)
-  const nameMatch = speechText.match(/(?:I am|This is)\s([A-Za-z]+)/i);
-  const dateMatch = speechText.match(/(?:on|for)\s(\w+\s\d+)/i);
-  const timeMatch = speechText.match(/(?:at)\s([\d:apm]+)/i);
+  console.log("🎙️ Received Recording URL:", recordingUrl);
+
+  const mockTranscription =
+    "My name is Raj, schedule a meeting on April 30 at 5 PM";
+
+  const nameMatch = mockTranscription.match(/name is (\w+)/i);
+  const dateMatch = mockTranscription.match(/on ([\w\s]+)/i);
+  const timeMatch = mockTranscription.match(/at ([\d:\s\w]+)/i);
 
   const name = nameMatch?.[1] || "Unknown";
-  const date = dateMatch?.[1] || "Not Provided";
-  const time = timeMatch?.[1] || "Not Provided";
+  const date = dateMatch?.[1] || "Not provided";
+  const time = timeMatch?.[1] || "Not provided";
 
   try {
     const newMeeting = new Meeting({ name, date, time });
     await newMeeting.save();
-    const twiml = new VoiceResponse();
-    twiml.say(
-      `Thank you ${name}, your meeting is scheduled on ${date} at ${time}.`
-    );
-    res.type("text/xml");
-    res.send(twiml.toString());
-  } catch (err) {
-    console.error("❌ Error saving meeting to MongoDB:", err); // ✅ Logs the actual error
-
-    const twiml = new VoiceResponse();
-    twiml.say(
-      "Sorry, there was an error scheduling your meeting. Please try again later."
-    );
-
-    res.type("text/xml");
-    res.send(twiml.toString());
+    res.status(200).send("Meeting scheduled successfully.");
+  } catch (error) {
+    console.error("Error scheduling meeting:", error.message || error);
+    res.status(500).send("Failed to schedule meeting.");
   }
 };

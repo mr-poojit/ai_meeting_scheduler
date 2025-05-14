@@ -161,4 +161,4 @@ MIT License
 
 ## 👨‍💻 Author
 
-Made with ❤️ by [Your Name](https://github.com/your-username)
+Made with ❤️ by Poojit Jagadeesh Nagaloti(https://github.com/your-username)
